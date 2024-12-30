@@ -1,11 +1,11 @@
 package com.bustling.chat.service;
 
-import com.capstone.usa.auth.model.User;
-import com.capstone.usa.chat.dto.MessageDto;
-import com.capstone.usa.chat.model.ChatMessage;
-import com.capstone.usa.chat.model.ChatRoom;
-import com.capstone.usa.chat.repository.ChatMessageRepository;
-import com.capstone.usa.chat.repository.ChatRoomRepository;
+import com.bustling.auth.entity.User;
+import com.bustling.chat.dto.MessageDto;
+import com.bustling.chat.entity.ChatMessage;
+import com.bustling.chat.entity.ChatRoom;
+import com.bustling.chat.repository.ChatMessageRepository;
+import com.bustling.chat.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

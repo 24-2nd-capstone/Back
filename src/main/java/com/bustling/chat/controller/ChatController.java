@@ -4,7 +4,6 @@ package com.bustling.chat.controller;
 import com.bustling.auth.entity.User;
 import com.bustling.chat.dto.ChatRoomIdDto;
 import com.bustling.chat.dto.MessageDto;
-import com.bustling.chat.dto.UserNameDto;
 import com.bustling.chat.entity.ChatMessage;
 import com.bustling.chat.service.ChatMessageService;
 import com.bustling.chat.service.ChatRoomService;
@@ -47,13 +46,6 @@ public class ChatController {
     ) {
         List<ChatMessage> messages = chatRoomService.getChatMessagesByRoomId(roomId);
         return ResponseEntity.status(HttpStatus.OK).body(messages);
-    }
-
-    @GetMapping("/getUser")
-    public UserNameDto getUserName(
-            @AuthenticationPrincipal User user
-    ) {
-        return chatRoomService.getUserName(user);
     }
 
     @GetMapping("/myRooms")

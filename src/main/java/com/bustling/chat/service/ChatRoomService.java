@@ -1,6 +1,9 @@
 package com.bustling.chat.service;
 
 import com.bustling.auth.entity.User;
+import com.bustling.book.entity.Book;
+import com.bustling.book.repository.BookRepository;
+import com.bustling.book.service.BookService;
 import com.bustling.chat.dto.ChatRoomIdDto;
 import com.bustling.chat.entity.ChatMessage;
 import com.bustling.chat.entity.ChatRoom;
@@ -24,14 +27,23 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final BookRepository bookRepository;
+    private final BookService bookService;
 
     @Transactional
     public ResponseEntity<?> createChatRoom(Long referenceId,  User user) {
         if (user == null || referenceId == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 요청입니다");
         }
+        Book book = bookService.getBook(referenceId).getBody();
+        if (book == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 요청입니다");
+        }
+        if (user.getId().equals(book.getUser().getId())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("자신과의 채팅은 할 수 없습니다");
+        }
 
-        Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByReferenceIdAndPostOwnerAndUser(referenceId, postOwner, user);
+        Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByReferenceIdAndPostOwnerAndUser(referenceId, book.getUser(), user);
         if (existingChatRoom.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(new ChatRoomIdDto(existingChatRoom.get().getRoomId(), getChatRoomTitle(existingChatRoom.get()), getChatPartnerName(existingChatRoom.get(), user)));
         }
@@ -39,7 +51,7 @@ public class ChatRoomService {
         ChatRoom chatRoom = new ChatRoom(
                 null,
                 referenceId,
-                postOwner,
+                book.getUser(),
                 user,
                 UUID.randomUUID().toString(),
                 LocalDateTime.now()
@@ -66,7 +78,6 @@ public class ChatRoomService {
     }
 
     private String getChatRoomTitle(ChatRoom chatRoom) {
-        // Assuming the referenceId can be used to fetch titles for specific contexts if needed
         return "Chat Room " + chatRoom.getReferenceId();
     }
 
