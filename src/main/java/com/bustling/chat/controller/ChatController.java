@@ -25,7 +25,6 @@ public class ChatController {
 
     @PostMapping("/create/{referenceId}")
     public ResponseEntity<?> createChatRoom(
-            @PathVariable String chatType,
             @PathVariable Long referenceId,
             @AuthenticationPrincipal User user
     ) {
